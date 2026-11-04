@@ -1,0 +1,1265 @@
+# MASTER DEVELOPMENT PROMPT — MYFINANCE
+## Personal Finance & Wealth Management Application
+
+Act as a Senior Flutter Developer, Software Architect, UI/UX Designer, Database Engineer, QA Engineer, and Security Engineer.
+
+Your task is to design, architect, develop, test, and deliver a complete, production-quality personal finance management application called **MyFinance**.
+
+Do not create a basic expense tracker or a collection of disconnected UI screens. Build a comprehensive personal financial management application that allows an individual to manage their entire financial life from one place.
+
+The application must have a polished, premium user experience, reliable financial calculations, proper database architecture, offline capabilities, and maintainable code.
+
+The final result must be a functional Flutter application, not merely a prototype or visual mockup.
+
+---
+
+# 1. PROJECT OBJECTIVES
+
+Build an application that allows users to:
+
+- Track all income and expenses.
+- Manage physical cash and multiple bank accounts.
+- Monitor total available money.
+- Record transfers between accounts.
+- Categorize and analyze spending.
+- Create and monitor budgets.
+- Establish savings goals.
+- Track personal loans, debts, and repayments.
+- Monitor monthly and yearly financial performance.
+- Generate financial reports.
+- Understand their overall financial position.
+
+The application should initially target personal finance management in Sri Lanka.
+
+Default currency: Sri Lankan Rupee (LKR / Rs.).
+
+Design the system so additional currencies and future features can be introduced without major architectural changes.
+
+# 2. TECHNOLOGY STACK
+
+Use stable, mutually compatible versions of the following technologies. Verify compatibility before adding dependencies.
+
+### Application
+- Flutter (stable channel)
+- Dart (compatible with installed Flutter SDK)
+- Material 3 with a customized design system
+
+### Architecture
+- Clean Architecture
+- Feature-first project organization
+- Separation of presentation, domain, and data layers
+- Dependency injection
+
+### State management
+- Riverpod
+- flutter_riverpod
+- riverpod_generator where appropriate
+
+### Navigation
+- go_router
+
+### Local database
+- SQLite
+- Drift ORM
+
+### Cloud backend
+- Supabase
+- PostgreSQL
+- Supabase Authentication
+- Supabase Row Level Security
+
+Cloud integration must be modular and optional. The application must remain fully usable without Supabase credentials.
+
+### Charts and visualization
+- fl_chart
+
+### Additional packages
+- intl for localization and currency formatting
+- freezed and json_serializable where useful
+- flutter_secure_storage for sensitive local configuration
+- local_auth for biometric authentication
+- image_picker for receipt attachments
+- flutter_local_notifications for reminders
+- uuid for entity identifiers
+
+Do not introduce unnecessary packages.
+
+Use packages only when they provide a clear architectural or functional benefit.
+
+# 3. SOFTWARE ARCHITECTURE
+
+Use Clean Architecture with feature-first organization.
+
+The codebase must be modular, maintainable, testable, and scalable.
+
+Suggested structure:
+
+lib/
+  main.dart
+
+  app/
+    app.dart
+    router/
+    theme/
+    config/
+
+  core/
+    constants/
+    errors/
+    extensions/
+    utils/
+    services/
+    database/
+    security/
+    widgets/
+
+  features/
+    dashboard/
+      data/
+      domain/
+      presentation/
+
+    accounts/
+      data/
+      domain/
+      presentation/
+
+    transactions/
+      data/
+      domain/
+      presentation/
+
+    categories/
+      data/
+      domain/
+      presentation/
+
+    budgets/
+      data/
+      domain/
+      presentation/
+
+    analytics/
+      data/
+      domain/
+      presentation/
+
+    savings_goals/
+      data/
+      domain/
+      presentation/
+
+    debts/
+      data/
+      domain/
+      presentation/
+
+    recurring_transactions/
+      data/
+      domain/
+      presentation/
+
+    reports/
+      data/
+      domain/
+      presentation/
+
+    settings/
+      data/
+      domain/
+      presentation/
+
+  shared/
+    models/
+    providers/
+    widgets/
+
+Each feature should have clearly separated responsibilities.
+
+### Domain layer
+Contains:
+- Entities
+- Repository interfaces
+- Use cases
+- Business rules
+- Financial calculations
+
+The domain layer must not depend on Flutter widgets, SQLite, Drift, or Supabase.
+
+### Data layer
+Contains:
+- Database models
+- Data sources
+- Repository implementations
+- Data mapping
+- Cloud synchronization implementations
+
+### Presentation layer
+Contains:
+- Screens
+- Widgets
+- Providers
+- Controllers
+- UI state
+
+Never put financial business logic directly inside widgets.
+
+Use dependency injection and repository abstractions.
+
+Avoid giant files, duplicate business logic, circular dependencies, and tightly coupled features.
+
+# 4. DESIGN SYSTEM AND USER EXPERIENCE
+
+The application must look like a premium modern fintech product.
+
+## Visual direction
+
+Combine:
+
+- Premium fintech visual aesthetics.
+- Google Material 3 component foundations.
+- Minimalist layout principles.
+- Carefully designed typography.
+- Subtle shadows and borders.
+- Rounded but professional cards.
+- Consistent spacing.
+- Excellent visual hierarchy.
+
+Do not use unmodified default Material 3 styling everywhere.
+
+Create a customized design system.
+
+## Theme support
+
+Implement three theme preferences:
+
+1. Light mode.
+2. Dark mode.
+3. Follow system theme.
+
+Theme switching must work throughout the entire application.
+
+Persist the user's preference.
+
+### Dark theme
+
+Use:
+- Deep navy or charcoal backgrounds.
+- Slightly elevated card surfaces.
+- Carefully selected emerald or teal accent colors.
+- Readable text contrast.
+- Subtle borders.
+- Distinct colors for income, expenses, and financial warnings.
+
+### Light theme
+
+Use:
+- Clean white or softly tinted backgrounds.
+- Subtle gray surfaces.
+- Dark readable typography.
+- Emerald or teal accents.
+- Minimal shadows.
+- Clear visual separation between sections.
+
+Use consistent semantic colors:
+
+- Income: green.
+- Expenses: red or coral.
+- Transfers: blue.
+- Savings: teal.
+- Warnings: amber.
+- Neutral financial information: gray.
+
+Do not depend on color alone to communicate financial states.
+
+## Typography
+
+Use a consistent modern typography system.
+
+Define:
+- Display styles.
+- Page titles.
+- Section headings.
+- Body text.
+- Labels.
+- Financial amounts.
+- Captions.
+
+Financial amounts should use tabular numerals where possible.
+
+## Layout
+
+The interface must be mobile-first.
+
+Support:
+- Different Android screen sizes.
+- Safe areas.
+- Keyboard visibility.
+- Scrolling.
+- Responsive layouts.
+- Accessible touch targets.
+
+Use a bottom navigation bar with approximately five main destinations:
+
+1. Home
+2. Transactions
+3. Accounts
+4. Analytics
+5. More
+
+Provide a prominent quick-add transaction action.
+
+The navigation must be intuitive and consistent.
+
+# 5. DASHBOARD
+
+Create a comprehensive financial dashboard.
+
+The dashboard must display:
+
+### Financial overview
+- Total available balance.
+- Cash in hand.
+- Combined bank balances.
+- Total income this month.
+- Total expenses this month.
+- Net cash flow.
+- Savings amount.
+- Outstanding liabilities.
+- Estimated net worth.
+
+Clearly distinguish available cash from net worth.
+
+### Charts
+- Income versus expenses.
+- Monthly spending trends.
+- Expense category distribution.
+- Account balance distribution.
+- Savings progress.
+
+### Other sections
+- Recent transactions.
+- Top spending categories.
+- Budget utilization.
+- Savings goal progress.
+- Upcoming recurring payments.
+
+Include:
+- Current month selector.
+- Custom date range.
+- Balance visibility toggle.
+- Refresh functionality.
+- Empty states for new users.
+
+All dashboard figures must be calculated from actual financial records.
+
+Never use hardcoded sample figures in production dashboard calculations.
+
+# 6. ACCOUNT MANAGEMENT
+
+Allow users to create and manage multiple financial accounts.
+
+Supported account types:
+
+- Cash wallet.
+- Savings account.
+- Current account.
+- Fixed deposit.
+- Digital wallet.
+- Credit card.
+- Foreign currency account.
+- Other financial asset accounts.
+
+Each account should contain:
+
+- Unique identifier.
+- Account name.
+- Account type.
+- Institution or bank name.
+- Currency.
+- Opening balance.
+- Opening date.
+- Account color.
+- Account icon.
+- Optional masked account number.
+- Active or archived status.
+
+### Account operations
+
+Implement:
+- Create account.
+- Edit account.
+- Archive account.
+- View account details.
+- View account transaction history.
+- View account balance.
+- Reconcile account balance.
+- Filter transactions by account.
+
+Account balances must be calculated reliably.
+
+Do not allow deleting accounts that contain financial history without an explicit safe archival or migration procedure.
+
+### Internal transfers
+
+Transfers are essential.
+
+Example:
+
+Transfer Rs. 10,000 from a savings account to cash.
+
+The result must be:
+
+- Savings account: -Rs. 10,000.
+- Cash wallet: +Rs. 10,000.
+- Total available money: unchanged.
+
+Transfers must never be counted as income or expenses.
+
+Support transfer descriptions, dates, source accounts, destination accounts, and optional fees.
+
+Transaction fees, when applicable, must be recorded separately as expenses.
+
+# 7. INCOME MANAGEMENT
+
+Support the following default categories:
+
+- Salary.
+- Freelance income.
+- Business income.
+- Rental income.
+- Interest.
+- Bonuses.
+- Gifts received.
+- Refunds.
+- Other income.
+
+Allow custom categories.
+
+Each income transaction should include:
+
+- Amount.
+- Date and time.
+- Category.
+- Source.
+- Destination account.
+- Description.
+- Notes.
+- Optional attachment.
+- Recurring status.
+
+Support editing, viewing, filtering, and searching income records.
+
+# 8. EXPENSE MANAGEMENT
+
+Create a comprehensive expense recording system.
+
+Default categories:
+
+1. Food and Dining
+   - Groceries
+   - Restaurants
+   - Snacks
+   - Beverages
+
+2. Transportation
+   - Fuel
+   - Public transport
+   - Taxi
+   - Vehicle maintenance
+   - Parking
+
+3. Housing
+   - Rent
+   - Electricity
+   - Water
+   - Maintenance
+
+4. Utilities
+   - Internet
+   - Mobile
+   - Subscriptions
+
+5. Shopping
+   - Clothing
+   - Electronics
+   - Personal items
+
+6. Education
+   - University
+   - Courses
+   - Books
+   - Other educational expenses
+
+7. Health
+   - Medical
+   - Pharmacy
+   - Healthcare services
+
+8. Entertainment
+   - Movies
+   - Gaming
+   - Events
+   - Outings
+
+9. Personal
+   - Haircuts
+   - Personal care
+   - Other personal expenses
+
+10. Financial
+   - Bank charges
+   - Loan interest
+   - Financial fees
+
+11. Other
+   - Miscellaneous expenses
+
+Categories and subcategories must be customizable.
+
+Each expense must include:
+
+- Amount.
+- Category.
+- Subcategory.
+- Payment account.
+- Transaction date.
+- Description.
+- Notes.
+- Tags.
+- Optional receipt attachment.
+- Recurring status.
+
+Implement:
+- Quick expense entry.
+- Full expense entry.
+- Editing.
+- Deletion with confirmation.
+- Search.
+- Category filtering.
+- Date filtering.
+- Account filtering.
+- Transaction details.
+
+Provide a fast transaction entry experience requiring minimal interaction.
+
+# 9. TRANSACTION MANAGEMENT
+
+Create a unified transaction system.
+
+Transaction types:
+
+- Income.
+- Expense.
+- Transfer.
+- Refund.
+- Adjustment.
+
+Implement:
+- Transaction history.
+- Date grouping.
+- Search.
+- Advanced filters.
+- Sorting.
+- Pagination or efficient lazy loading.
+- Transaction details.
+- Editing.
+- Soft deletion or auditable reversal.
+
+Maintain historical financial accuracy.
+
+When an existing transaction is edited or reversed, all affected account balances and analytics must be recalculated correctly.
+
+# 10. FINANCIAL DATA INTEGRITY
+
+This is one of the most important requirements.
+
+Financial calculations must be accurate and consistent.
+
+Use integer minor units or a reliable decimal representation for monetary amounts.
+
+Never use floating-point arithmetic for financial calculations.
+
+For LKR, support the appropriate currency precision.
+
+Use a ledger-inspired accounting approach.
+
+Each financial movement should produce balanced accounting entries.
+
+For example:
+
+Expense:
+- Debit expense category.
+- Credit payment account.
+
+Income:
+- Debit receiving account.
+- Credit income category.
+
+Transfer:
+- Debit destination account.
+- Credit source account.
+
+Maintain immutable transaction identifiers and an auditable transaction history.
+
+Use database transactions for operations involving multiple records.
+
+Prevent:
+- Duplicate transaction creation.
+- Unbalanced transfers.
+- Negative or invalid amounts where prohibited.
+- Accidental double processing.
+- Incorrect balance calculations.
+- Race conditions during concurrent updates.
+
+Clearly define how credit cards, liabilities, refunds, and adjustments affect account balances and net worth.
+
+Do not mix account balances, income totals, expense totals, and net worth calculations.
+
+# 11. BUDGET MANAGEMENT
+
+Allow monthly and custom-period budgets.
+
+Support:
+- Overall spending budget.
+- Category-specific budgets.
+- Subcategory budgets.
+- Monthly budgets.
+- Weekly budgets.
+- Custom periods.
+
+Display:
+- Budget amount.
+- Amount spent.
+- Remaining budget.
+- Percentage consumed.
+- Projected spending.
+
+Provide notifications at:
+- 50%.
+- 75%.
+- 90%.
+- 100%.
+
+Allow custom warning thresholds.
+
+Support optional budget rollover.
+
+Budget calculations must exclude internal transfers.
+
+# 12. SAVINGS GOALS
+
+Allow users to create financial goals.
+
+Examples:
+- Emergency fund.
+- Vehicle purchase.
+- Laptop purchase.
+- Education.
+- General savings.
+
+Each goal should include:
+- Goal name.
+- Target amount.
+- Current saved amount.
+- Target date.
+- Monthly contribution target.
+- Optional linked account.
+- Description.
+- Status.
+
+Display:
+- Progress percentage.
+- Remaining amount.
+- Required monthly contribution.
+- Estimated completion date.
+
+Support adding and removing contributions with appropriate transaction handling.
+
+Avoid double-counting savings contributions as income.
+
+# 13. DEBT AND LOAN MANAGEMENT
+
+Support:
+
+- Personal loans.
+- Family loans.
+- Bank loans.
+- Vehicle loans.
+- Lease agreements.
+- Money lent to others.
+- Money borrowed from others.
+
+Track:
+- Principal amount.
+- Outstanding balance.
+- Interest rate.
+- Start date.
+- Due date.
+- Repayment schedule.
+- Payment history.
+- Lender or borrower.
+- Notes.
+
+Separate principal repayments from interest expenses.
+
+Calculate remaining debt accurately.
+
+Support partial repayments and early settlements.
+
+# 14. RECURRING TRANSACTIONS
+
+Support recurring financial activities:
+
+- Monthly salary.
+- Monthly bills.
+- Subscriptions.
+- Rent.
+- Loan payments.
+- Regular savings contributions.
+
+Support schedules such as:
+- Daily.
+- Weekly.
+- Monthly.
+- Yearly.
+- Custom interval.
+
+Allow users to pause, edit, and cancel recurring schedules.
+
+Do not silently create duplicate financial transactions.
+
+Provide due-date reminders and an explicit transaction generation/confirmation policy.
+
+# 15. ANALYTICS AND REPORTING
+
+Create an advanced financial analytics section.
+
+Include:
+
+### Income analytics
+- Monthly income.
+- Yearly income.
+- Income by source.
+- Income trends.
+
+### Expense analytics
+- Monthly spending.
+- Category breakdown.
+- Subcategory breakdown.
+- Daily spending trends.
+- Highest expenses.
+- Fixed versus variable spending.
+- Account-wise spending.
+
+### Financial analytics
+- Savings rate.
+- Net cash flow.
+- Net worth trend.
+- Budget performance.
+- Income versus expenses.
+- Monthly financial comparisons.
+
+Provide date filters:
+- This week.
+- This month.
+- Last month.
+- Last three months.
+- This year.
+- Custom range.
+
+All charts must use real database data.
+
+Charts should have:
+- Proper labels.
+- Legends.
+- Tooltips.
+- Empty states.
+- Responsive sizing.
+- Theme-aware styling.
+
+Do not make charts unnecessarily complicated.
+
+# 16. FINANCIAL INSIGHTS
+
+Create a financial insights module.
+
+Initially use rule-based calculations.
+
+Examples:
+
+- Spending increased by 15% compared with last month.
+- Transportation is your highest expense category.
+- Your savings rate improved.
+- Your monthly food budget is almost exhausted.
+- You have upcoming recurring payments.
+- You are spending more than you earn.
+
+Insights must be based on real transactions and correctly selected comparison periods.
+
+Never generate fabricated insights.
+
+Keep the system modular so AI-powered financial analysis can be introduced later.
+
+AI must never autonomously modify financial records or initiate payments.
+
+# 17. REPORTS AND EXPORTS
+
+Support:
+
+- Monthly financial summary.
+- Yearly financial summary.
+- Income reports.
+- Expense reports.
+- Category reports.
+- Account statements.
+- Budget reports.
+- Savings reports.
+- Debt reports.
+
+Allow export to:
+- CSV.
+- Excel (XLSX).
+- PDF.
+
+Reports must include:
+- Reporting period.
+- Currency.
+- Totals.
+- Category breakdown.
+- Relevant charts where appropriate.
+- Generation date.
+
+Make exports easy to share or save on Android.
+
+# 18. SEARCH AND FILTERING
+
+Provide a global transaction search.
+
+Search by:
+- Description.
+- Amount.
+- Category.
+- Account.
+- Date.
+- Tags.
+
+Support combined filters and clear filter functionality.
+
+Optimize database queries and indexes for frequently used search conditions.
+
+# 19. SECURITY AND PRIVACY
+
+Financial information is sensitive.
+
+Implement:
+
+- Secure authentication when cloud accounts are enabled.
+- Optional biometric app lock.
+- Optional PIN protection.
+- Secure local configuration.
+- Supabase Row Level Security.
+- User-specific data access.
+- Input validation.
+- Safe error handling.
+- No sensitive information in logs.
+- No hardcoded API keys or secrets.
+- Safe attachment handling.
+
+Never store bank passwords, PINs, or online banking credentials.
+
+Local-only operation must be possible.
+
+Cloud synchronization must be optional and disabled until properly configured.
+
+Do not claim that the application is encrypted at rest unless the actual database and attachment storage implementation provides that protection.
+
+# 20. OFFLINE-FIRST FUNCTIONALITY
+
+The application must work without internet access.
+
+Use Drift/SQLite as the primary local data store.
+
+All core operations must work offline:
+
+- Creating transactions.
+- Editing transactions.
+- Managing accounts.
+- Viewing balances.
+- Viewing analytics.
+- Managing budgets.
+- Tracking savings.
+- Recording repayments.
+
+Design cloud synchronization using a repository and synchronization service abstraction.
+
+When Supabase is configured:
+
+- Synchronize records securely.
+- Track synchronization status.
+- Handle pending changes.
+- Handle failed synchronization.
+- Avoid duplicate records.
+- Use stable UUIDs.
+- Handle conflicting updates explicitly.
+- Provide manual retry.
+
+Never overwrite newer financial data silently.
+
+Local data must remain available if cloud connectivity is unavailable.
+
+# 21. SETTINGS
+
+Create a comprehensive settings module.
+
+Include:
+
+- Light theme.
+- Dark theme.
+- System theme.
+- Default currency.
+- Date format.
+- Number formatting.
+- Start of financial month.
+- Default account.
+- Default transaction categories.
+- Biometric lock.
+- Notification preferences.
+- Backup and restore.
+- Data export.
+- Cloud synchronization settings.
+- About application.
+- Privacy information.
+
+Default locale should be suitable for Sri Lanka.
+
+Use correct LKR formatting and support localization for future languages.
+
+# 22. USER ONBOARDING
+
+Create a polished first-launch experience.
+
+Allow users to:
+
+1. Introduce themselves to the application.
+2. Select their preferred theme.
+3. Select their default currency.
+4. Create their cash account.
+5. Add bank accounts.
+6. Enter opening balances.
+7. Configure initial expense categories.
+8. Optionally configure a monthly budget.
+
+Allow users to skip optional onboarding steps.
+
+Never force a cloud account just to use the application locally.
+
+Start with a useful dashboard even when only one account exists.
+
+# 23. DATABASE DESIGN
+
+Design normalized database tables with appropriate relationships, constraints, indexes, and migrations.
+
+At minimum, implement:
+
+- accounts
+- transactions
+- ledger_entries
+- categories
+- budgets
+- budget_categories
+- savings_goals
+- savings_contributions
+- debts
+- debt_payments
+- recurring_transactions
+- attachments
+- tags
+- transaction_tags
+- app_settings
+- sync_metadata
+
+Include:
+- Primary keys.
+- Foreign keys.
+- Unique constraints.
+- Check constraints.
+- Created timestamps.
+- Updated timestamps.
+- Appropriate indexes.
+- Migration support.
+
+Clearly distinguish account records from transaction records and ledger entries.
+
+Design a consistent source of truth for account balances.
+
+Avoid storing redundant calculated data unless there is a clear performance reason and a reconciliation mechanism.
+
+Use database migrations from the beginning.
+
+# 24. ERROR HANDLING AND USER FEEDBACK
+
+Implement consistent application-wide error handling.
+
+Handle:
+- Invalid input.
+- Database errors.
+- Network failures.
+- Authentication failures.
+- Synchronization errors.
+- Attachment failures.
+- Unexpected exceptions.
+
+Display useful user-friendly error messages.
+
+Never expose stack traces or internal database errors to end users.
+
+Provide:
+- Loading states.
+- Empty states.
+- Success feedback.
+- Confirmation dialogs.
+- Retry actions.
+- Offline indicators.
+
+Avoid silent failures.
+
+# 25. TESTING REQUIREMENTS
+
+Testing is mandatory.
+
+Create:
+
+### Unit tests
+- Financial calculations.
+- Account balance calculations.
+- Income calculations.
+- Expense calculations.
+- Transfer calculations.
+- Budget calculations.
+- Savings calculations.
+- Debt repayment calculations.
+- Currency formatting.
+- Date range calculations.
+
+### Repository tests
+- Local database operations.
+- Transaction persistence.
+- Account updates.
+- Data integrity.
+- Migrations.
+- Synchronization behavior.
+
+### Widget tests
+- Dashboard.
+- Transaction forms.
+- Account screens.
+- Budget screens.
+- Analytics screens.
+- Theme switching.
+
+### Integration tests
+- Complete transaction workflow.
+- Account creation.
+- Internal transfer.
+- Editing and reversing transactions.
+- Budget tracking.
+- Offline operation.
+- Backup and restoration.
+
+Test important edge cases, including:
+- Zero balances.
+- Large amounts.
+- Decimal values.
+- Invalid amounts.
+- Transactions on month boundaries.
+- Leap years.
+- Deleted or archived accounts.
+- Duplicate operations.
+- Failed synchronization.
+
+# 26. DEVELOPMENT QUALITY REQUIREMENTS
+
+Follow Flutter and Dart best practices.
+
+Requirements:
+
+- Sound null safety.
+- Consistent naming conventions.
+- Small, focused classes.
+- Reusable widgets.
+- Strong separation of concerns.
+- Proper asynchronous operations.
+- No unnecessary rebuilds.
+- Efficient database queries.
+- No hardcoded business logic in UI.
+- No giant screen files.
+- No duplicate implementations.
+- No unused dependencies.
+- No unnecessary abstractions.
+
+Run:
+
+- dart format
+- flutter analyze
+- flutter test
+
+Resolve all project errors and warnings where reasonably possible.
+
+Do not suppress warnings just to obtain a clean analysis result.
+
+Do not leave incomplete TODOs in critical functionality.
+
+# 27. IMPLEMENTATION INSTRUCTIONS
+
+Work directly within the existing project directory.
+
+Before modifying anything:
+
+1. Inspect the existing project.
+2. Check Flutter and Dart versions.
+3. Check the Android development environment.
+4. Inspect existing files.
+5. Identify existing dependencies.
+6. Identify potential compatibility problems.
+7. Preserve useful existing work.
+
+Do not unnecessarily recreate an already configured Flutter project.
+
+If the project does not exist, create it using the standard Flutter project structure.
+
+Then implement the complete application.
+
+Follow this execution sequence:
+
+PHASE 1:
+- Project setup.
+- Dependency configuration.
+- Architecture.
+- Theme system.
+- Navigation.
+- Database initialization.
+
+PHASE 2:
+- Onboarding.
+- Account management.
+- Transaction management.
+- Income and expense recording.
+- Transfers.
+- Financial calculations.
+
+PHASE 3:
+- Dashboard.
+- Categories.
+- Budgets.
+- Analytics.
+
+PHASE 4:
+- Savings goals.
+- Debt management.
+- Recurring transactions.
+- Financial insights.
+
+PHASE 5:
+- Reports.
+- Export functionality.
+- Notifications.
+- Security.
+- Settings.
+
+PHASE 6:
+- Optional Supabase integration.
+- Synchronization.
+- Error handling.
+- Performance improvements.
+
+PHASE 7:
+- Automated testing.
+- Static analysis.
+- Final bug fixing.
+- Android build verification.
+
+These phases are implementation checkpoints, not permission to stop after each phase. Continue until all core requirements are implemented and verified.
+
+If a real external service requires credentials, implement the integration behind a clean interface, document the required configuration, and ensure the rest of the application remains functional without those credentials.
+
+Do not invent credentials or pretend an external service is connected.
+
+# 28. FINAL ACCEPTANCE CRITERIA
+
+The application is not complete until:
+
+1. It launches successfully.
+2. Navigation works.
+3. Both light and dark themes work.
+4. Theme preference persists.
+5. Users can create multiple accounts.
+6. Users can record income.
+7. Users can record expenses.
+8. Users can transfer money between accounts.
+9. Transfers do not inflate income or expenses.
+10. Account balances remain accurate.
+11. Dashboard statistics use actual records.
+12. Categories can be managed.
+13. Budgets calculate correctly.
+14. Savings goals work.
+15. Debts and repayments work.
+16. Transaction search and filters work.
+17. Analytics display real financial data.
+18. Offline functionality works.
+19. Data persists after application restart.
+20. Reports can be exported.
+21. Critical financial calculations have automated tests.
+22. No critical functionality depends on dummy data.
+23. Flutter static analysis passes without unresolved errors.
+24. Tests pass.
+25. A debug Android APK can be generated successfully.
+
+# 29. FINAL DELIVERABLES
+
+Provide:
+
+1. Complete Flutter source code.
+2. Properly organized architecture.
+3. Database schema and migrations.
+4. Working light and dark themes.
+5. Functional application screens.
+6. Business logic and repositories.
+7. Automated tests.
+8. Android build configuration.
+9. README.md.
+10. Environment configuration example.
+11. Supabase setup instructions.
+12. Development and build instructions.
+
+At completion, provide a concise engineering summary containing:
+
+- Implemented modules.
+- Architecture decisions.
+- Database structure.
+- Dependencies.
+- Test results.
+- Flutter analysis results.
+- Android build result.
+- Remaining limitations, if any.
+- Commands to run the application.
+
+IMPORTANT FINAL INSTRUCTIONS:
+
+Do not merely explain how to build the application. Actually implement it.
+
+Do not produce only a design prototype.
+
+Do not use fake buttons, non-functional navigation, placeholder charts, or hardcoded financial calculations.
+
+Do not claim tests or builds passed unless they were actually executed successfully.
+
+Prioritize financial correctness, data integrity, security, maintainability, performance, and user experience.
+
+Make sensible engineering decisions when minor details are unspecified. Do not repeatedly stop to ask questions that can be resolved through reasonable defaults.
+
+The final application should feel like a professional personal wealth management product that a person can confidently use every day.
+
+**Project name: MyFinance**
+
+**Product vision: One place to understand, manage, and improve your entire financial life.**
